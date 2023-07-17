@@ -1,0 +1,25 @@
+{
+  "name": "music-groomers",
+  "version": "0.0.1",
+  "description": "Grooms GDPR download data from streaming services",
+  "main": "app.mjs",
+  "scripts": {
+    "start": "node app.mjs",
+    "watch": "nodemon -L app.mjs -e js,mjs,json,ejs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Brandon der Blätter",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "bullmq": "^3.5.9",
+    "chromedriver": "^109.0.0",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "jsdom": "^21.1.0",
+    "mongodb": "^4.13.0",
+    "node-fetch": "^3.3.0",
+    "node-html-parser": "^6.1.4",
+    "nodemon": "^2.0.20",
+    "selenium-webdriver": "^4.8.0"
+  }
+}

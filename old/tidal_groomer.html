@@ -1,0 +1,53 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tidal Groomer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div class="container mx-auto my-10 flex flex-col items-start">
+        <h1 class="text-5xl mb-8">Tidal Groomer</h1>
+        <input class="block mb-8" type="file" name="Tidal data" onchange="groomTidalData(event)">
+        <a id="download" class="block rounded-lg bg-teal-300 hover:bg-teal-200 p-4 cursor-pointer">download</a>
+    </div>
+    <script>
+        const groomTidalData = (event) => {
+            const uploadFile = event.target.files[0];
+            if (uploadFile) {
+                const reader = new FileReader();
+                let downloadContent = '';
+                reader.addEventListener("load", async() => {
+                    const uploadText = reader.result;
+                    const textLineArray = uploadText.split('\n')
+                    const streamDataArray = textLineArray
+                        .filter(textLine => {
+                            try {
+                                JSON.parse(textLine);
+                            } catch (e) {
+                                return false;
+                            }
+                            return true;
+                        })
+                        .map(textLine => {
+                            // console.log(textLine);
+                            return JSON.parse(textLine)
+                        })
+                    // console.log(streamDataArray)
+                    downloadContent = JSON.stringify(streamDataArray);
+                    console.log(downloadContent)
+                    const downloadFile = new Blob([downloadContent], { type: 'text/json' });
+                    const downloadLink = document.querySelector('#download');
+                    downloadLink.href = URL.createObjectURL(downloadFile);
+                    // console.log(`${uploadFile.name.replace(/\.[^/.]+$/, "")}-groomed.json`)
+                    downloadLink.download = `${uploadFile.name.replace(/\.[^/.]+$/, "")}-groomed.json`;
+                    console.log(downloadLink)
+                });
+                reader.readAsText(uploadFile);
+
+            }
+        }
+    </script>
+</body>
+</html>

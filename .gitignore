@@ -1,0 +1,7 @@
+node_modules
+logs
+
+# input and output files are named with these prefixes; don't commit them
+amazon-s*
+soundcloud-s*
+tidal-s*

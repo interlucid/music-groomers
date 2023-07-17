@@ -1,0 +1,92 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <title>Amazon Music Groomer</title> -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div class="container mx-auto my-10 flex flex-col items-start">
+        <h1 class="text-5xl mb-8">Amazon Music Groomer</h1>
+        <input class="block mb-8" type="file" name="musicData" onchange="groomMusicData(event)">
+        <a id="download" class="block rounded-lg bg-teal-300 hover:bg-teal-200 px-4 pt-2 pb-3 cursor-pointer">download</a>
+    </div>
+    <script>
+        setTimeout(() => {
+            document.title = 'MY GREAT TITLE';
+        }, 3000)
+
+        const groomMusicData = (event) => {
+            const uploadFile = event.target.files[0];
+            if (uploadFile) {
+                const reader = new FileReader();
+                let downloadContent = '';
+                reader.addEventListener("load", async() => {
+                    const uploadText = reader.result;
+                    const textLineArray = uploadText.split('\r\n')
+                    const streamDataArrayArray = textLineArray
+                        .slice(1)
+                        .filter(textLine => {
+                            // try {
+                            //     JSON.parse(textLine);
+                            // } catch (e) {
+                            //     return false;
+                            // }
+                            return true;
+                        })
+                        .map(textLine => {
+                            // console.log(textLine);
+                            const textArray = textLine.split(',');
+                            // console.log(textArray);
+                            return textArray;
+                            // return JSON.parse(textLine)
+                        })
+                    // console.log(streamDataArrayArray);
+                    const streamDataKeys = textLineArray.slice(0, 1)[0].split(',');
+                    // console.log(streamDataKeys)
+                    const streamDataObjectArray = streamDataArrayArray
+                        .map(streamDataArray => {
+                            // console.log(streamDataArray)
+                            let streamDataObject = {};
+                            for(let i = 0; i < streamDataKeys.length; i++) {
+                                streamDataObject[streamDataKeys[i]] = streamDataArray[i];
+                            }
+                            // console.log(streamDataObject);
+                            return streamDataObject;
+                        })
+                    // console.log(streamDataObjectArray)
+
+
+                    // filter out streams that are less than half the length of the song
+                    const scrobbleDataObjectArray = streamDataObjectArray
+                        .filter(streamDataObject => {
+                            return (streamDataObject.trackLengthMs / 2) - streamDataObject.consumptionDurationMs < 0;
+                        })
+                    console.log(scrobbleDataObjectArray)
+
+                    // iterate over the objects
+
+                    // make a request using the track ASIN
+
+
+
+                    // const result = await fetch(`https://amazon.com/dp/${scrobbleDataObjectArray[0].artistAsin}`)
+                    // console.log(result);
+
+                    // downloadContent = JSON.stringify(streamDataObjectArray);
+                    // console.log(downloadContent)
+                    const downloadFile = new Blob([downloadContent], { type: 'text/json' });
+                    const downloadLink = document.querySelector('#download');
+                    downloadLink.href = URL.createObjectURL(downloadFile);
+                    // console.log(`${uploadFile.name.replace(/\.[^/.]+$/, "")}-groomed.json`)
+                    downloadLink.download = `${uploadFile.name.replace(/\.[^/.]+$/, "")}-groomed.json`;
+                    console.log(downloadLink)
+                });
+                reader.readAsText(uploadFile);
+
+            }
+        }
+    </script>
+</body>
+</html>
